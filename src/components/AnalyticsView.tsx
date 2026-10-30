@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Flame, Droplets, Scale, TrendingUp, Sparkles } from 'lucide-react';
+import { useMemo } from 'react';
+import { Flame, Scale, Sparkles } from 'lucide-react';
 import { getHistoricalLogs, loadUserProfile } from '../data/storage';
 import {
   calculateBMI,

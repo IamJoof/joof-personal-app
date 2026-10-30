@@ -1,0 +1,16 @@
+{
+  "name": "Joof Personal App",
+  "short_name": "JoofApp",
+  "description": "Personal health, calorie measurer & BMI intake tracker",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf9f6",
+  "theme_color": "#faf9f6",
+  "icons": [
+    {
+      "src": "/avocado.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
