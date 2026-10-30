@@ -124,7 +124,7 @@ export default function ProfileSettings({ onProfileUpdated }: ProfileSettingsPro
                 min="10"
                 max="120"
                 value={profile.age}
-                onChange={e => handleChange('age', Number(e.target.value) || 25)}
+                onChange={e => handleChange('age', Math.max(1, Number(e.target.value) || 25))}
                 className="w-full mt-1 bg-[#f4f5f7] rounded-xl px-3 py-2 text-xs font-semibold focus:outline-hidden"
               />
             </div>
@@ -132,10 +132,10 @@ export default function ProfileSettings({ onProfileUpdated }: ProfileSettingsPro
               <label className="text-xs font-bold text-gray-700">Height (cm)</label>
               <input
                 type="number"
-                min="100"
+                min="50"
                 max="250"
                 value={profile.heightCm}
-                onChange={e => handleChange('heightCm', Number(e.target.value) || 170)}
+                onChange={e => handleChange('heightCm', Math.max(1, Number(e.target.value) || 170))}
                 className="w-full mt-1 bg-[#f4f5f7] rounded-xl px-3 py-2 text-xs font-semibold focus:outline-hidden"
               />
             </div>
@@ -144,10 +144,10 @@ export default function ProfileSettings({ onProfileUpdated }: ProfileSettingsPro
               <input
                 type="number"
                 step="0.1"
-                min="30"
+                min="1"
                 max="300"
                 value={profile.weightKg}
-                onChange={e => handleChange('weightKg', Number(e.target.value) || 70)}
+                onChange={e => handleChange('weightKg', Math.max(1, Number(e.target.value) || 70))}
                 className="w-full mt-1 bg-[#f4f5f7] rounded-xl px-3 py-2 text-xs font-semibold focus:outline-hidden"
               />
             </div>

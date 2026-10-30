@@ -31,13 +31,16 @@ export default function App() {
 
   const remainingCalories = Math.max(0, budget.targetCalories - totalCaloriesConsumed);
 
-  const handleOpenMeasurer = (meal: MealType = 'lunch') => {
+  const [measurerDate, setMeasurerDate] = useState<string>(todayStr);
+
+  const handleOpenMeasurer = (meal: MealType = 'lunch', dateStr?: string) => {
     setMeasurerMeal(meal);
+    setMeasurerDate(dateStr || todayStr);
     setIsMeasurerOpen(true);
   };
 
   const handleAddFood = (meal: MealType, item: LoggedFoodItem) => {
-    saveMealItem(todayStr, meal, item);
+    saveMealItem(measurerDate, meal, item);
     setRefreshKey(prev => prev + 1);
   };
 
@@ -47,7 +50,7 @@ export default function App() {
       {/* Centered Mobile/Desktop Wrapper */}
       <main className="flex-1 w-full max-w-md mx-auto p-4 sm:p-5 flex flex-col">
         {activeTab === 'dashboard' && (
-          <Dashboard key={refreshKey} onOpenMeasurer={handleOpenMeasurer} />
+          <Dashboard refreshTrigger={refreshKey} onOpenMeasurer={handleOpenMeasurer} />
         )}
 
         {activeTab === 'analytics' && (

@@ -13,7 +13,12 @@ import {
  * BMI = weight(kg) / (height(m))^2
  */
 export function calculateBMI(weightKg: number, heightCm: number): BMICalculation {
-  if (weightKg <= 0 || heightCm <= 0) {
+  if (
+    !Number.isFinite(weightKg) ||
+    weightKg <= 0 ||
+    !Number.isFinite(heightCm) ||
+    heightCm <= 0
+  ) {
     return {
       bmi: 0,
       category: 'Underweight',
@@ -24,6 +29,15 @@ export function calculateBMI(weightKg: number, heightCm: number): BMICalculation
 
   const heightMeters = heightCm / 100;
   const bmi = weightKg / (heightMeters * heightMeters);
+
+  if (!Number.isFinite(bmi) || bmi <= 0) {
+    return {
+      bmi: 0,
+      category: 'Underweight',
+      healthyMinWeight: 0,
+      healthyMaxWeight: 0,
+    };
+  }
 
   let category: BMICategory = 'Normal';
   if (bmi < 18.5) {
@@ -59,8 +73,19 @@ export function calculateBMR(
   age: number,
   sex: 'male' | 'female'
 ): number {
+  if (
+    !Number.isFinite(weightKg) ||
+    weightKg <= 0 ||
+    !Number.isFinite(heightCm) ||
+    heightCm <= 0 ||
+    !Number.isFinite(age) ||
+    age <= 0
+  ) {
+    return 0;
+  }
   const base = 10 * weightKg + 6.25 * heightCm - 5 * age;
-  return sex === 'male' ? base + 5 : base - 161;
+  const res = sex === 'male' ? base + 5 : base - 161;
+  return Math.max(0, Math.round(res * 10) / 10);
 }
 
 /**
@@ -114,6 +139,8 @@ export function calculateCalorieBudget(
         break;
     }
   }
+
+  targetCalories = Math.max(1200, Math.round(targetCalories) || 1200);
 
   // 4 kcal per gram protein & carbs, 9 kcal per gram fat
   const proteinGrams = Math.round((targetCalories * 0.3) / 4);

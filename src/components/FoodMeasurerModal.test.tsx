@@ -79,4 +79,25 @@ describe('FoodMeasurerModal Component', () => {
     const gramInput = screen.getByLabelText(/Gram Weight/i) as HTMLInputElement;
     expect(gramInput.value).toBe('150');
   });
+
+  it('disables submission and prevents adding food when portion grams is 0 or negative', () => {
+    const onAdd = vi.fn();
+    render(
+      <FoodMeasurerModal
+        isOpen={true}
+        initialMeal="lunch"
+        onClose={() => {}}
+        onAddFood={onAdd}
+        remainingCalories={800}
+      />
+    );
+
+    const gramInput = screen.getByLabelText(/Gram Weight/i) as HTMLInputElement;
+    fireEvent.change(gramInput, { target: { value: '0' } });
+
+    const submitBtn = screen.getByRole('button', { name: /\+ Add to Lunch/i });
+    expect(submitBtn).toBeDisabled();
+    fireEvent.click(submitBtn);
+    expect(onAdd).not.toHaveBeenCalled();
+  });
 });

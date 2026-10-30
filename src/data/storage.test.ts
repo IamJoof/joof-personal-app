@@ -26,7 +26,7 @@ describe('Local Storage Repository', () => {
     expect(updated.targetWeightKg).toBe(68);
   });
 
-  it('adds and removes food items from daily meal buckets', () => {
+  it('adds and removes food items from daily meal buckets and rejects non-positive grams', () => {
     const date = '2026-10-30';
     saveMealItem(date, 'breakfast', {
       id: 'item-1',
@@ -34,6 +34,15 @@ describe('Local Storage Repository', () => {
       grams: 50,
       nutrition: { calories: 190, protein: 7, carbs: 34, fat: 3, fiber: 5 },
       loggedAt: '08:30 AM',
+    });
+
+    // Zero-gram ghost meal should be rejected
+    saveMealItem(date, 'breakfast', {
+      id: 'ghost-1',
+      foodName: 'Ghost Water',
+      grams: 0,
+      nutrition: { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 },
+      loggedAt: '08:31 AM',
     });
 
     let log = getDailyLog(date);
@@ -52,15 +61,25 @@ describe('Local Storage Repository', () => {
     expect(getDailyLog(date).waterMl).toBe(500);
   });
 
-  it('logs weight entry and active calories burned with optional note', () => {
-    const date = '2026-10-30';
-    logWeightEntry(date, 72.4);
-    logActivityEntry(date, 350, '30m treadmill');
+  it('logs weight entry and active calories burned with optional note, without mutating profile for past dates', () => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const pastDate = '2020-01-01';
 
-    const log = getDailyLog(date);
+    // Logging for past date updates that day's log but leaves user profile intact
+    const originalProfile = loadUserProfile();
+    logWeightEntry(pastDate, 88.5);
+    expect(getDailyLog(pastDate).weightKg).toBe(88.5);
+    expect(loadUserProfile().weightKg).toBe(originalProfile.weightKg);
+
+    // Logging for today updates both day log and profile
+    logWeightEntry(todayStr, 72.4);
+    logActivityEntry(todayStr, 350, '30m treadmill');
+
+    const log = getDailyLog(todayStr);
     expect(log.weightKg).toBe(72.4);
     expect(log.burnedCalories).toBe(350);
     expect(log.burnedNote).toBe('30m treadmill');
+    expect(loadUserProfile().weightKg).toBe(72.4);
   });
 
   it('retrieves historical logs for analytics across multiple days', () => {

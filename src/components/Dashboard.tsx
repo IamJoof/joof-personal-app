@@ -29,10 +29,11 @@ import MealSection from './MealSection';
 import QuickLogModal from './QuickLogModal';
 
 interface DashboardProps {
-  onOpenMeasurer: (meal: MealType) => void;
+  onOpenMeasurer: (meal: MealType, dateStr?: string) => void;
+  refreshTrigger?: number;
 }
 
-export default function Dashboard({ onOpenMeasurer }: DashboardProps) {
+export default function Dashboard({ onOpenMeasurer, refreshTrigger }: DashboardProps) {
   const [currentDateStr, setCurrentDateStr] = useState<string>(() => {
     return new Date().toISOString().split('T')[0];
   });
@@ -46,7 +47,7 @@ export default function Dashboard({ onOpenMeasurer }: DashboardProps) {
   useEffect(() => {
     setDailyLog(getDailyLog(currentDateStr));
     setProfile(loadUserProfile());
-  }, [currentDateStr]);
+  }, [currentDateStr, refreshTrigger]);
 
   // Calculations
   const bmiInfo = calculateBMI(profile.weightKg, profile.heightCm);
@@ -253,28 +254,28 @@ export default function Dashboard({ onOpenMeasurer }: DashboardProps) {
         <MealSection
           meal="breakfast"
           items={dailyLog.meals.breakfast}
-          onOpenMeasurer={onOpenMeasurer}
+          onOpenMeasurer={(m) => onOpenMeasurer(m, currentDateStr)}
           onRemoveItem={handleRemoveMealItem}
         />
 
         <MealSection
           meal="lunch"
           items={dailyLog.meals.lunch}
-          onOpenMeasurer={onOpenMeasurer}
+          onOpenMeasurer={(m) => onOpenMeasurer(m, currentDateStr)}
           onRemoveItem={handleRemoveMealItem}
         />
 
         <MealSection
           meal="dinner"
           items={dailyLog.meals.dinner}
-          onOpenMeasurer={onOpenMeasurer}
+          onOpenMeasurer={(m) => onOpenMeasurer(m, currentDateStr)}
           onRemoveItem={handleRemoveMealItem}
         />
 
         <MealSection
           meal="snacks"
           items={dailyLog.meals.snacks}
-          onOpenMeasurer={onOpenMeasurer}
+          onOpenMeasurer={(m) => onOpenMeasurer(m, currentDateStr)}
           onRemoveItem={handleRemoveMealItem}
         />
       </div>

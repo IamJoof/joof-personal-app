@@ -73,6 +73,7 @@ export default function FoodMeasurerModal({
   if (!isOpen) return null;
 
   const handleAddFood = () => {
+    if (!selectedFood || grams <= 0) return;
     const now = new Date();
     const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -398,7 +399,12 @@ export default function FoodMeasurerModal({
         <div className="p-4 border-t border-gray-100 bg-white">
           <button
             onClick={handleAddFood}
-            className="w-full py-3 rounded-2xl bg-pastel-primary text-white font-bold text-sm shadow-md shadow-pastel-primary/30 hover:brightness-105 active:scale-[0.99] transition-all flex items-center justify-center gap-2"
+            disabled={grams <= 0 || !selectedFood}
+            className={`w-full py-3 rounded-2xl font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 ${
+              grams <= 0 || !selectedFood
+                ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+                : 'bg-pastel-primary text-white shadow-pastel-primary/30 hover:brightness-105 active:scale-[0.99]'
+            }`}
           >
             <Check className="w-4 h-4" />
             + Add to {selectedMeal.charAt(0).toUpperCase() + selectedMeal.slice(1)} ({portionNutrition.calories} kcal)

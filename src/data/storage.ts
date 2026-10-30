@@ -79,6 +79,9 @@ export function saveMealItem(
   meal: MealType,
   item: LoggedFoodItem
 ): void {
+  if (!item || !Number.isFinite(item.grams) || item.grams <= 0) {
+    return;
+  }
   const log = getDailyLog(dateStr);
   log.meals[meal].push(item);
   saveDailyLog(log);
@@ -106,10 +109,13 @@ export function logWeightEntry(dateStr: string, weightKg: number): void {
   log.weightKg = weightKg;
   saveDailyLog(log);
 
-  // Also update current weight on user profile if logging for today
-  const profile = loadUserProfile();
-  profile.weightKg = weightKg;
-  saveUserProfile(profile);
+  // Only update current weight on user profile if logging for today
+  const todayStr = new Date().toISOString().split('T')[0];
+  if (dateStr === todayStr && Number.isFinite(weightKg) && weightKg > 0) {
+    const profile = loadUserProfile();
+    profile.weightKg = weightKg;
+    saveUserProfile(profile);
+  }
 }
 
 export function logActivityEntry(

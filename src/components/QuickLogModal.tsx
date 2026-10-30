@@ -27,11 +27,13 @@ export default function QuickLogModal({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const num = Number(val) || 0;
+    const rawNum = Number(val) || 0;
     if (type === 'weight') {
-      onSaveWeight(num);
+      const weight = Math.max(1, rawNum);
+      onSaveWeight(weight);
     } else {
-      onSaveActivity(num, note.trim());
+      const burned = Math.max(0, rawNum);
+      onSaveActivity(burned, note.trim());
     }
     onClose();
   };
@@ -61,6 +63,7 @@ export default function QuickLogModal({
             <div className="relative mt-1">
               <input
                 type="number"
+                min={isWeight ? '1' : '0'}
                 step={isWeight ? '0.1' : '1'}
                 required
                 autoFocus

@@ -28,8 +28,20 @@ describe('Calculator Domain Logic', () => {
     expect(Number.isFinite(zeroRes.bmi)).toBe(true);
     expect(zeroRes.category).toBe('Underweight');
 
+    const nanRes = calculateBMI(NaN, 175);
+    expect(nanRes.bmi).toBe(0);
+    expect(nanRes.category).toBe('Underweight');
+
+    const infRes = calculateBMI(70, Infinity);
+    expect(infRes.bmi).toBe(0);
+    expect(infRes.category).toBe('Underweight');
+
     const highRes = calculateBMI(250, 250);
     expect(Number.isFinite(highRes.bmi)).toBe(true);
+
+    expect(calculateBMR(NaN, 175, 25, 'male')).toBe(0);
+    expect(calculateBMR(-50, 175, 25, 'male')).toBe(0);
+    expect(calculateBMR(70, 0, 25, 'male')).toBe(0);
   });
 
   it('calculates BMR using Mifflin-St Jeor formula for male and female', () => {
